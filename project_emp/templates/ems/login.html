@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<title>login</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" type="text/css"
+			href="/static/css/style.css" />
+	</head>
+
+
+	<body>
+		<div id="wrap">
+			<div id="top_content">
+					<div id="header">
+						<div id="rightheader">
+							<p id="time">
+{#								2012/12/05#}
+								<br />
+							</p>
+						</div>
+						<div id="topheader">
+							<h1 id="title">
+								<a href="#">main</a>
+							</h1>
+						</div>
+						<div id="navigation">
+						</div>
+					</div>
+				<div id="content">
+					<p id="whereami">
+					</p>
+					<h1>
+						login
+					</h1>
+{#					<form action="{% url loginapp:loginlogic %}" method="post">#}
+					<form action="{% url 'loginapp:logincheck' %}" method="post">
+                        {% csrf_token %}
+						<table cellpadding="0" cellspacing="0" border="0" class="form_table">
+							<tr>
+								<td valign="middle" align="right">
+									username:
+								</td>
+								<td valign="middle" align="left">
+									<input type="text" class="inputgri" id="name"/>
+								</td>
+							</tr>
+							<tr>
+								<td valign="middle" align="right">
+									password:
+								</td>
+								<td valign="middle" align="left">
+                                    <input type="password" class="inputgri" id="pwd" />
+								    <span id="text1"></span>
+                                </td>
+							</tr>
+						</table>
+						<p>
+                            <input type="button" class="button" value="Regist" onclick="regist()">
+							<input type="button" class="button" value="Submit &raquo;" onclick="check()" />
+                            <input type="checkbox" name="checkbox" id ="remember"value="1">记住我
+						</p>
+					</form>
+
+				</div>
+			</div>
+			<div id="footer">
+				<div id="footer_bg">
+					ABC@126.com
+				</div>
+			</div>
+		</div>
+	</body>
+
+<script type="text/javascript">
+    time=document.getElementById('time');
+    date=new Date();
+    time.innerHTML=date;
+
+    function regist() {
+       location.href="{% url 'loginapp:regist' %}"
+    }
+
+    function check(){
+        name=document.getElementById('name').value;
+        pwd=document.getElementById('pwd').value;
+        checkbox=document.getElementById('remember').value;
+        console.log(checkbox);
+        var xhr;
+        if (window.XMLHttpRequest){
+            xhr=new XMLHttpRequest()
+        }else if(window.ActiveXObject){
+            xhr=new ActiveXObject('Microsoft.XMLHTTP')
+        }
+        xhr.open("post","{% url 'loginapp:logincheck' %}",true);
+        xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xhr.send("name="+name+"&pwd="+pwd+"&csrfmiddlewaretoken="+"{{ csrf_token }}");
+        xhr.onreadystatechange=function () {
+            if (xhr.readyState==4 && xhr.status==200){
+{#                msgTag = document.getElementById("text1");#}
+                if (xhr.responseText=='用户名或密码错误！'){
+                    alert(xhr.responseText);
+{#                    msgTag.innerHTML=xhr.responseText;#}
+                }
+                else if(xhr.responseText=='验证码错误！'){
+                    alert(xhr.responseText);
+                    location.href= "{% url 'loginapp:loginlogic'%}?name="+name+'&password='+pwd+'&checkbox='+checkbox;
+
+                }
+            }
+        }
+    }
+
+</script>
+
+
+</html>
+
+

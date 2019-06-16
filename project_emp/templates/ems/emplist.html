@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+{% load  static %}
+	<head>
+		<title>emplist</title>
+        <style>
+            .a{
+                width:20px;
+                height: 20px;
+                border:1px solid #e1e2e3;
+                cursor:pointer;
+                display: inline-block;
+                text-align: center;
+                line-height: 20px;
+            }
+            .b{
+                border:0;
+                width:20px;
+                height: 20px;
+                cursor:pointer;
+                display: inline-block;
+                text-align: center;
+                line-height: 20px;
+            }
+            a{
+                text-decoration:none;
+            }
+        </style>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+	</head>
+    <script>
+        function deletedata(id) {
+            var msg="您真的确定要删除吗？\n\n请确认！";
+            if (confirm(msg)==true)
+            {
+{#                location.href='/hello/emplist';#}
+                location.href="{% url 'loginapp:delete' %}?num={{ page.number }}&id="+id;
+                return true
+            }else {
+                return false;
+            }
+        }
+
+    </script>
+
+
+
+
+	<body>
+		<div id="wrap">
+			<div id="top_content"> 
+				<div id="header">
+					<div id="rightheader">
+						<p id="time">
+
+							<br />
+						</p>
+					</div>
+					<div id="topheader">
+						<h1 id="title">
+							<a href="#">main</a>
+						</h1>
+					</div>
+					<div id="navigation">
+					</div>
+				</div>
+				<div id="content">
+					<p id="whereami">
+					</p>
+					<h1>
+						Welcome!
+					</h1>
+					<table class="table">
+						<tr class="table_header">
+							<td>
+								ID
+							</td>
+							<td>
+								Name
+							</td>
+							<td>
+								Salary
+							</td>
+							<td>
+								Age
+							</td>
+                            <td>
+                                pic
+                            </td>
+							<td>
+								Operation
+							</td>
+						</tr>
+{#                        遍历数据库所有员工信息#}
+                        {% for user in page.object_list %}
+                            <tr class="row1">
+                                <td>
+{#                                    员工id#}
+                                    {{ user.id }}
+                                </td>
+                                <td>
+{#                                    员工姓名#}
+                                    {{ user.name }}
+                                </td>
+                                <td>
+{#                                    员工薪水#}
+                                    {{ user.salary }}
+                                </td>
+                                <td>
+{#                                    员工年龄#}
+                                    {{ user.age }}
+                                </td>
+                                <td>
+                                    <img src="{% static user.pic.url %}" alt="" width="50px" height="50px">
+                                </td>
+                                <td>
+{#                                    a连接通过每人的id来进行删除或修改#}
+{#                                    <a href="/hello/delete/?id={{ foo.id }}">delete emp</a>&nbsp;<a href="/hello/updateemp/?id={{ foo.id }} ">update emp</a>#}
+{#                                    <a href="{% url 'loginapp:delete' %}?id={{ user.id }}">delete emp</a>&nbsp;<a href="{% url 'loginapp:updateemp' %}?id={{ user.id }} ">update emp</a>#}
+                                    <a href="javascript:void(0)" onclick='deletedata({{ user.id }})'>delete emp</a>&nbsp;<a href="{% url 'loginapp:updateemp' %}?id={{ user.id }}&num={{ page.number }} ">update emp</a>
+                                </td>
+						    </tr>
+                        {% endfor %}
+
+					</table>
+
+{#                    显示上一页#}
+                    {% if page.has_previous %}
+                        <a href="/hello/emplist/?num={{ page.previous_page_number }}">上一页</a>
+                    {% endif %}
+
+{#                    输出所有页号#}
+                    {% for page_num in page.paginator.page_range %}
+                        {% csrf_token %}
+                        <a href="/hello/emplist/?num={{ page_num }}">
+                            {% if num == page.number %}
+                                <span class="a">{{ page_num }}</span>
+                            {% else %}
+                                <span class="b">{{ page_num }}</span>
+                            {% endif %}
+                        </a>
+{#                        <a href='/hello/emplist/?num={{ page_num }}'>{{ page_num }}</a>#}
+{#                        {{ page_num }}#}
+                    {% endfor %}
+
+                    {% if page.has_next %}
+                        <a href="/hello/emplist/?num={{ page.next_page_number }}">下一页</a>
+                    {% endif %}
+
+					<p>
+						<input type="button" class="button" value="Add Employee" onclick="location.href= '{% url "loginapp:addemp" %}?num={{ page.number}}'"/>
+
+						<input type="button" class="button" value="Check" onclick="location.href='/hello/check'"/>
+					</p>
+				</div>
+			</div>
+			<div id="footer">
+				<div id="footer_bg">
+				ABC@126.com
+				</div>
+			</div>
+		</div>
+	</body>
+<script type="text/javascript">
+    time=document.getElementById('time');
+    date=new Date();
+    time.innerHTML=date
+</script>
+</html>
+

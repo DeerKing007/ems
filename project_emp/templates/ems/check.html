@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+{% load  static %}
+	<head>
+		<title>check</title>
+        <style>
+            a{
+                text-decoration:none;
+            }
+
+
+        </style>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+	</head>
+
+    <script src="{% static '/js/jquery-3.3.1.min.js' %}"></script>
+{#    <script src=""></script>#}
+    <script>
+        function check() {
+            text=$('#text').val();
+            $.ajax({
+                type:'get',
+                url:"{% url 'loginapp:checkname' %}",
+                data:'name='+text,
+                success:function (data) {
+                    obj = data['users'];
+                    var tablelist = "<tr><td>ID</td><td>Name</td><td>Salary</td><td>Age</td><td>Pictur</td></tr>";
+                    for (var i = 0; i < obj.length; i++) {
+                        id = obj[i]['id'];
+                        name = obj[i]['name'];
+                        salary = obj[i]['salary'];
+                        age = obj[i]['age'];
+                        pic = obj[i]['pic'];
+                        tablelist += "<tr><td>" + id + "</td><td>" + name + "</td><td>" + salary + "</td><td>" + age + "</td><td>"+ "<img height=50px width=50px src='/static/"+pic+"'>" + "</td></tr>"
+                    }
+                    table=$('#table');
+                    table.html(tablelist)
+
+                }
+            })
+
+        }
+
+
+
+
+    </script>
+
+
+
+    <script type="text/javascript">
+    function check1() {
+{#        创建对象#}
+        var xhr;
+{#        兼容所有浏览器#}
+        if (window.ActiveXObject){
+            xhr=new ActiveXObject('Microsoft.XMLHTTP')
+        }else if(window.XMLHttpRequest){
+            xhr=new XMLHttpRequest()
+        }
+{#        获取输入的文本内容#}
+        text=document.getElementById('text').value;
+        console.log(text);
+{#        判断输入的文本长度#}
+        if (text.length==0){
+            document.getElementById('table').innerHTML='请输入关键字'
+        }else {
+            console.log('heheh');
+{#            发送请求到服务器#}
+            xhr.open('get',"{% url 'loginapp:checkname'%}?name="+text,true);
+            xhr.send();
+{#            监听接收状态#}
+            xhr.onreadystatechange=function () {
+                if(xhr.readyState==4 && xhr.status==200){
+                obj=eval(xhr.responseText);
+                var tablelist="<tr><td>ID</td><td>Name</td><td>Salary</td><td>Age</td><td>Pictur</td></tr>";
+                for (var i=0;i<obj.length;i++){
+                    id=obj[i]['id'];
+                    name=obj[i]['name'];
+                    salary=obj[i]['salary'];
+                    age=obj[i]['age'];
+                    pic=obj[i]['pic'];
+                    tablelist+="<tr><td>" + id + "</td><td>" + name + "</td><td>" + salary + "</td><td>" + age + "</td><td>" + pic + "</td></tr>"
+                }
+                document.getElementById('table').innerHTML=tablelist
+                }
+            }
+        }
+    }
+
+
+
+    </script>
+
+	<body>
+		<div id="wrap">
+			<div id="top_content">
+				<div id="header">
+					<div id="rightheader">
+						<p id="time">
+
+							<br />
+						</p>
+					</div>
+					<div id="topheader">
+						<h1 id="title">
+							<a href="#">main</a>
+						</h1>
+					</div>
+					<div id="navigation">
+					</div>
+				</div>
+				<div id="content">
+					<p id="whereami">
+					</p>
+					<h1>
+						Welcome!
+					</h1>
+
+					 <form action="{% url 'loginapp:checkname' %}" method="get" enctype="application/x-www-form-urlencoded">
+                         <input type="text" id="text" onkeyup="check()" >
+                         <input type="button" value="查询" name="username" onclick="check()">
+                         <input type="submit">
+                     </form>
+
+                    <table id="table" border="1" cellspacing="0">
+
+					 </table>
+
+					<p>
+						<input type="button" class="button" value="Emplist" onclick="location.href='/hello/emplist'"/>
+					</p>
+				</div>
+			</div>
+			<div id="footer">
+				<div id="footer_bg">
+				ABC@126.com
+				</div>
+			</div>
+		</div>
+	</body>
+<script>
+    date=new Date();
+    console.log(date);
+    document.getElementById('time').innerHTML=date;
+
+</script>
+
+</html>
+
